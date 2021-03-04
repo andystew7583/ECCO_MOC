@@ -14,6 +14,7 @@ density_dir = [products_dir 'DENS' filesep]; %%% Name of directory in which to s
 ufluxes_dir = [products_dir 'UFLUX' filesep]; %%% Name of directory in which to store computed u-fluxes in density space
 vfluxes_dir = [products_dir 'VFLUX' filesep]; %%% Name of directory in which to store computed u-fluxes in density space
 psi_dir = [products_dir 'PSI' filesep]; %%% Name of directory in which to store computed streamfunction in density space
+ifs_dir = [products_dir 'IFS' filesep]; %%% Name of directory in which to store computed form stresses in density space
 ECCO_grid_dir = [basedir filesep 'nctiles_grid']; %%% Directory holding ECCO data
 ECCO_data_dir = [basedir filesep 'nctiles_daily']; %%% Directory holding ECCO data
 % ECCO_data_dir = [basedir filesep 'nctiles_monthly']; %%% Directory holding ECCO data

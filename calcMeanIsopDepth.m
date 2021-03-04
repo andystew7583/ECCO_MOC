@@ -105,7 +105,7 @@ AREAS = cumsum(AREAS,3,'omitnan');
 
 %%% Integrate along latitude bands to get the total area above each isopycnal    
 for k = 1:Nd
-  Aisop_mean(:,k,n) = calc_MeridionalTransport(AREAW(:,:,k),AREAS(:,:,k));
+  Aisop_mean(:,k) = calc_MeridionalTransport(AREAW(:,:,k),AREAS(:,:,k));
 end
 
 toc(tstart)

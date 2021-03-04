@@ -8,7 +8,7 @@
 isopDefinitions;
 
 %%% Options
-varname = 'PHIHYDcR';
+varname = 'oceTAUX';
 thedate = startdate;
 
 %%% Open script file
