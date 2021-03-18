@@ -10,8 +10,8 @@ function field_tiles_out = read_nctiles_daily (file_name,field_name)
   
   field_data = ncread(file_name,field_name);
   gs = size(field_data,1);
-  
-  field_tiles_out = 0*mygrid.hFacC;
+
+  field_tiles_out = repmat(0*mygrid.XC,[1 1 size(field_data,4)]);
   field_tiles_out.f1(:,1:gs,:) = squeeze(field_data(:,:,1,:));  
   field_tiles_out.f1(:,gs+(1:gs),:) = squeeze(field_data(:,:,2,:));    
   field_tiles_out.f1(:,2*gs+(1:gs),:) = squeeze(field_data(:,:,3,:));    

@@ -29,7 +29,7 @@ for n = 1:Nt
   end  
   
   %%% Add streamfunction snapthot to storage matrix
-  PSI(:,:,n) = PSI_tmp(:,:,n);
+  PSI(:,:,n) = PSI_tmp(:,:,end);
   
   toc(tstart)
   

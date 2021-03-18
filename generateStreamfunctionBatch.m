@@ -27,7 +27,7 @@ mkdir(fullfile('.',script_dir));
 fid = fopen(fullfile('.',script_dir,'run_calcStreamfunction.sh'),'w');
 
 %%% Loop through snapshots and compute fluxes in density classes. 
-for n = 81:Nt
+for n = 1:Nt
   
   %%% Create SGE submission file
   sge_fname = createSGEfile(fullfile('.',script_dir),2,'all.q','astewart@atmos.ucla.edu','calcStreamfunctionSnapshot',n);

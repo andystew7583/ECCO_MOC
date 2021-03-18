@@ -65,7 +65,7 @@ function calcStreamfunctionSnapshot (n)
 
   %%% Integrate along latitude bands to get the streamfunction  
   for k = 1:Nd
-    PSI(:,k+1,n) = calc_MeridionalTransport(PSIU(:,:,k),PSIV(:,:,k));
+    PSI(:,k+1) = calc_MeridionalTransport(PSIU(:,:,k),PSIV(:,:,k));
   end
 
   toc(tstart)

@@ -1,3 +1,33 @@
+varname = 'oceTAUY';
+thedate = startdate;
+
+while (thedate <= enddate)
+
+  %%% Current year and day of the year
+  yearnum = str2num(datestr(thedate,'yyyy'));
+  yearday = thedate - datenum([num2str(yearnum),'-01-01'])+1;
+fname = './Version4/Release4/nctiles_daily/';
+fname = [fname,varname,'/'];
+  fname = [fname,varname,'_',datestr(thedate,'yyyy_mm_dd'),'.nc'];
+if (~exist(fname))
+disp(fname)
+end
+thedate = thedate + 1;
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 %%% Start by clearing memory
 clear all;
 

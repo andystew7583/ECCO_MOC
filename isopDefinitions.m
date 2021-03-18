@@ -58,4 +58,4 @@ nDblRes = 3;
 %%% 'eul' -> Eulerian-mean
 %%% 'bol' -> Eddy bolus
 %%% 'tot' -> Total, i.e. sum of E-M and bolus
-psitype = 'tot';
+psitype = 'bol';
