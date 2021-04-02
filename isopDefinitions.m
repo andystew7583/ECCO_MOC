@@ -4,28 +4,43 @@
 %%% Defines global variables required for all calculations.
 %%%
 
+%%% Set true for V4R4 with daily data, false for V4R3 with monthly data
+isV4R4 = false;
+
 %%% Directories
-basedir = ['Version4' filesep 'Release4'];
-% basedir = ['Version4' filesep 'Release3'];
+if (isV4R4)
+  basedir = ['Version4' filesep 'Release4'];
+else
+  basedir = ['Version4' filesep 'Release3'];
+end
 % basedir = ['Version5' filesep 'Alpha'];
-products_dir = [basedir filesep 'myproducts_daily' filesep]; %%% Directory in which to store output of calculations
-% products_dir = [basedir filesep 'myproducts_monthly' filesep]; %%% Directory in which to store output of calculations
+if (isV4R4)
+  products_dir = [basedir filesep 'myproducts_daily' filesep]; %%% Directory in which to store output of calculations
+else
+  products_dir = [basedir filesep 'myproducts_monthly' filesep]; %%% Directory in which to store output of calculations
+end
 density_dir = [products_dir 'DENS' filesep]; %%% Name of directory in which to store computed density variable
 ufluxes_dir = [products_dir 'UFLUX' filesep]; %%% Name of directory in which to store computed u-fluxes in density space
 vfluxes_dir = [products_dir 'VFLUX' filesep]; %%% Name of directory in which to store computed u-fluxes in density space
 psi_dir = [products_dir 'PSI' filesep]; %%% Name of directory in which to store computed streamfunction in density space
 ifs_dir = [products_dir 'IFS' filesep]; %%% Name of directory in which to store computed form stresses in density space
 ECCO_grid_dir = [basedir filesep 'nctiles_grid']; %%% Directory holding ECCO data
-ECCO_data_dir = [basedir filesep 'nctiles_daily']; %%% Directory holding ECCO data
-% ECCO_data_dir = [basedir filesep 'nctiles_monthly']; %%% Directory holding ECCO data
+if (isV4R4)
+  ECCO_data_dir = [basedir filesep 'nctiles_daily']; %%% Directory holding ECCO data
+else
+  ECCO_data_dir = [basedir filesep 'nctiles_monthly']; %%% Directory holding ECCO data
+end
 
 %%% Number of snapshots
 %%% N.B. 312 snapshots are available in Version5, but 288 may be preferable
 %%% for comparison with Version4
-startdate = datenum('1992-01-01');
-enddate = datenum('2016-12-31');
-% Nt = 288;
-Nt = enddate-startdate+1;
+if (isV4R4)
+  startdate = datenum('1992-01-01');
+  enddate = datenum('2016-12-31');
+  Nt = enddate-startdate+1;
+else
+  Nt = 288;
+end
 
 %%% Time in months
 tt = 1:Nt;
@@ -58,4 +73,7 @@ nDblRes = 3;
 %%% 'eul' -> Eulerian-mean
 %%% 'bol' -> Eddy bolus
 %%% 'tot' -> Total, i.e. sum of E-M and bolus
-psitype = 'bol';
+psitype = 'tot';
+
+%%% Set true to compute only Atlantic MOC
+psiAtlOnly = true;

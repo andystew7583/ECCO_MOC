@@ -22,6 +22,13 @@ smoothLen = 30;
 %%% Load pre-computed RFs
 load('RFs.mat');
 
+%%% Load wind stress time series
+load(fullfile(products_dir,'WS.mat'));
+ymin = -60;
+ymax = -50;
+yidx_ifs = find((secLats>ymin) & (secLats<ymax));
+WSmean = squeeze(mean(WS(yidx_ifs,:)))';
+
 %%% Cumulative responses
 PSI_WS_CRF = cumsum(PSI_WS_RF,1);
 TFS_WS_CRF = cumsum(TFS_WS_RF,1);
@@ -70,6 +77,7 @@ set(gcf,'Position',framepos);
 
 %%% Short timescale response
 subplot('Position',axpos(1,:));
+colororder = get(gca,'ColorOrder');
 tt_plot = tt_rf(1:endIdx);
 % plot(tt_plot,mean(PSI_WS_CRF(1:endIdx,:),2));
 % shadedErrorBar(tt_plot,mean(PSI_WS_CRF(1:endIdx,:),2),std(PSI_WS_CRF(1:endIdx,:),[],2),'lineProps',{'Color',colororder(1,:)});
@@ -91,12 +99,12 @@ set(gca,'XLim',[-1 endIdx-1]);
 set(gca,'YLim',ylim);
 xlabel('Lag time \tau (days)');
 ylabel('Response function');
+set(gca,'FontSize',fontsize);
 box on;
 legend('Overturning','Topographic form stress','Interfacial form stress','Eddy form stress','Location','NorthWest')
 
 %%% Long timescale response
 subplot('Position',axpos(2,:));
-colororder = get(gca,'ColorOrder');
 tt_plot = tt_rf(endIdx+1:end)/365;
 % plot(tt_plot,mean(PSI_WS_CRF_smooth(endIdx+1:end,:),2));
 % shadedErrorBar(tt_plot,mean(PSI_WS_CRF_smooth(endIdx+1:end,:),2),std(PSI_WS_CRF_smooth(endIdx+1:end,:),[],2),'lineProps',{'Color',colororder(1,:)});
@@ -117,5 +125,6 @@ set(gca,'YLim',ylim);
 set(gca,'XLim',[tt_plot(1) tt_plot(end)]);
 set(gca,'YTickLabel','');
 xlabel('Lag time \tau (years)');
+set(gca,'FontSize',fontsize);
 box on;
 

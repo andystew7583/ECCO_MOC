@@ -42,6 +42,19 @@ drf = mk3D(mygrid.DRF,mygrid.hFacC);
 dxg = mk3D(mygrid.DXG,mygrid.hFacC);
 dyg = mk3D(mygrid.DYG,mygrid.hFacC);
 
+%%% If only Atlantic overturning is desired, mask out other basins in
+%%% latitude line masks
+if (psiAtlOnly)
+  [atlMskC,atlMskW,atlMskS] = v4_basin('atlExt');
+  for j=1:length(mygrid.LATS_MASKS)
+    mygrid.LATS_MASKS(j).mskCint = mygrid.LATS_MASKS(j).mskCint .* atlMskC;
+    mygrid.LATS_MASKS(j).mskCedge = mygrid.LATS_MASKS(j).mskCedge .* atlMskC;
+    mygrid.LATS_MASKS(j).mskWedge = mygrid.LATS_MASKS(j).mskWedge .* atlMskW;
+    mygrid.LATS_MASKS(j).mskSedge = mygrid.LATS_MASKS(j).mskSedge .* atlMskS;
+  end
+end
+  
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%

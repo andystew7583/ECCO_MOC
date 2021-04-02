@@ -47,19 +47,20 @@ mkdir(vfluxes_dir);
 
 %%% Loop through snapshots and compute fluxes in density classes. 
 for n = 1:Nt
-  
-  disp(n);
-  tstart = tic();
-  
-  %%% Current date as a datenum (for v4r4 daily data)
-  thedate = startdate + n - 1;
-  fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];
-  disp(fileidstr);
+    
+  tstart = tic();  
   
   %%% Load density field
-%   DENS = read_nctiles([density_dir 'DENS' num2str(n)],'DENS');       
-  DENS = read_nctiles([density_dir 'DENS' fileidstr],'DENS');       
-  
+  if (isV4R4)
+    thedate = startdate + n - 1;
+    fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];
+    disp(fileidstr);
+    DENS = read_nctiles([density_dir 'DENS' fileidstr],'DENS');       
+  else
+    disp(n);  
+    DENS = read_nctiles([density_dir 'DENS' num2str(n)],'DENS');       
+  end
+    
   %%% Load Eulerian and bolus horizontal velocities
 %   listVars={'UVEL','VVEL','UVELSTAR','VVELSTAR'};
   listVars={'UVELMASS','VVELMASS','GM_PsiX','GM_PsiY'};
