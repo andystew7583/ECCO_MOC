@@ -50,24 +50,30 @@ for n = 1:Nt
     
   tstart = tic();  
   
-  %%% Load density field
+  %%% File naming system depends on ECCO version
   if (isV4R4)
     thedate = startdate + n - 1;
-    fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];
-    disp(fileidstr);
-    DENS = read_nctiles([density_dir 'DENS' fileidstr],'DENS');       
+    fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];        
   else
-    disp(n);  
-    DENS = read_nctiles([density_dir 'DENS' num2str(n)],'DENS');       
+    fileidstr = num2str(n,'%.4d');    
   end
+  
+  %%% Keep track of calculation
+  disp(fileidstr);
+  
+  %%% Load density field
+  DENS = read_nctiles([density_dir 'DENS' fileidstr],'DENS');       
     
   %%% Load Eulerian and bolus horizontal velocities
 %   listVars={'UVEL','VVEL','UVELSTAR','VVELSTAR'};
   listVars={'UVELMASS','VVELMASS','GM_PsiX','GM_PsiY'};
   for vvv=1:length(listVars)    
-    vv=listVars{vvv};
-%     tmp1=read_nctiles([myenv.nctilesdir vv '/' vv],vv,n);
-    tmp1 = read_nctiles_daily([myenv.nctilesdir vv filesep vv fileidstr '.nc'],vv);
+    vv=listVars{vvv};    
+    if (isV4R4)
+      tmp1 = read_nctiles_daily([myenv.nctilesdir vv filesep vv fileidstr '.nc'],vv);
+    else
+      tmp1=read_nctiles([myenv.nctilesdir vv '/' vv],vv,n);
+    end
     tmp1=mean(tmp1,4);
     tmp1(mygrid.mskC==0)=NaN;
     eval([vv '=tmp1;']);
@@ -98,14 +104,12 @@ for n = 1:Nt
   [UFLUX,VFLUX] = layers_remap({UVELcalc,VVELcalc},'extensive',DENS,dens_levs,nDblRes);  
     
   %%% Save to NetCDF files in gcmfaces format  
-%   write2nctiles([ufluxes_dir 'UFLUX' num2str(n)],UFLUX,1, ...
   write2nctiles([ufluxes_dir 'UFLUX' fileidstr],UFLUX,1, ...
     {'fldName','UFLUX'}, ...
     {'longName',['u-volume fluxes in density bins at time level ' num2str(n)]}, ...
     {'units','m^3/s'}, ...
     {'coord','lon lat dep tim'} ...
   );  
-%   write2nctiles([vfluxes_dir 'VFLUX' num2str(n)],VFLUX,1, ...
   write2nctiles([vfluxes_dir 'VFLUX' fileidstr],VFLUX,1, ...
     {'fldName','VFLUX'}, ...
     {'longName',['v-volume fluxes in density bins at time level ' num2str(n)]}, ...

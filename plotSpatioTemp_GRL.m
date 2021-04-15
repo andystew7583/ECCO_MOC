@@ -68,7 +68,7 @@ labelspacing = 200;
 axpos = zeros(6,4);
 axpos(1,:) = [0.08 0.1 0.29 0.85];
 axpos(2,:) = [0.38 0.1 0.6 0.85];
-ylim = [-1.4 0.7];
+ylim = [-1.4 1.4];
 
 
 figure(204);                
@@ -89,9 +89,9 @@ hold on
 % shadedErrorBar(tt_plot,mean(TFS_WS_CRF(1:endIdx,:),2),std(TFS_WS_CRF(1:endIdx,:),[],2),'lineProps',{'Color',colororder(2,:)});
 % shadedErrorBar(tt_plot,mean(IFS_WS_CRF(1:endIdx,:),2),std(IFS_WS_CRF(1:endIdx,:),[],2),'lineProps',{'Color',colororder(3,:)});
 % shadedErrorBar(tt_plot,mean(EFS_WS_CRF(1:endIdx,:),2),std(EFS_WS_CRF(1:endIdx,:),[],2),'lineProps',{'Color',colororder(4,:)});
-shadedErrorBar(tt_plot,mean(TFS_WS_CRF(1:endIdx,:),2),TFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(2,:)});
-shadedErrorBar(tt_plot,mean(IFS_WS_CRF(1:endIdx,:),2),IFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(3,:)});
-shadedErrorBar(tt_plot,mean(EFS_WS_CRF(1:endIdx,:),2),EFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(4,:)});
+shadedErrorBar(tt_plot,-mean(TFS_WS_CRF(1:endIdx,:),2),TFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(2,:)});
+shadedErrorBar(tt_plot,-mean(IFS_WS_CRF(1:endIdx,:),2),IFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(3,:)});
+shadedErrorBar(tt_plot,-mean(EFS_WS_CRF(1:endIdx,:),2),EFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(4,:)});
 plot([-1 tt_plot],0*[-1 tt_plot],'k--');
 plot([0 0],ylim,'k:');
 hold off;
@@ -101,7 +101,6 @@ xlabel('Lag time \tau (days)');
 ylabel('Response function');
 set(gca,'FontSize',fontsize);
 box on;
-legend('Overturning','Topographic form stress','Interfacial form stress','Eddy form stress','Location','NorthWest')
 
 %%% Long timescale response
 subplot('Position',axpos(2,:));
@@ -116,9 +115,9 @@ hold on;
 % shadedErrorBar(tt_plot,mean(TFS_WS_CRF_smooth(endIdx+1:end,:),2),std(TFS_WS_CRF_smooth(endIdx+1:end,:),[],2),'lineProps',{'Color',colororder(2,:)});
 % shadedErrorBar(tt_plot,mean(IFS_WS_CRF_smooth(endIdx+1:end,:),2),std(IFS_WS_CRF_smooth(endIdx+1:end,:),[],2),'lineProps',{'Color',colororder(3,:)});
 % shadedErrorBar(tt_plot,mean(EFS_WS_CRF_smooth(endIdx+1:end,:),2),std(EFS_WS_CRF_smooth(endIdx+1:end,:),[],2),'lineProps',{'Color',colororder(4,:)});
-shadedErrorBar(tt_plot,mean(TFS_WS_CRF_smooth(endIdx+1:end,:),2),TFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(2,:)});
-shadedErrorBar(tt_plot,mean(IFS_WS_CRF_smooth(endIdx+1:end,:),2),IFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(3,:)});
-shadedErrorBar(tt_plot,mean(EFS_WS_CRF_smooth(endIdx+1:end,:),2),EFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(4,:)});
+shadedErrorBar(tt_plot,-mean(TFS_WS_CRF_smooth(endIdx+1:end,:),2),TFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(2,:)});
+shadedErrorBar(tt_plot,-mean(IFS_WS_CRF_smooth(endIdx+1:end,:),2),IFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(3,:)});
+shadedErrorBar(tt_plot,-mean(EFS_WS_CRF_smooth(endIdx+1:end,:),2),EFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(4,:)});
 plot(tt_plot,0*tt_plot,'k--');
 hold off;
 set(gca,'YLim',ylim);
@@ -127,4 +126,7 @@ set(gca,'YTickLabel','');
 xlabel('Lag time \tau (years)');
 set(gca,'FontSize',fontsize);
 box on;
+handle = legend('AABW flux ($T_{\mathrm{AABW}}$)','Topographic form stress (TFS)','Mean interfacial form stress (MIFS)','Eddy interfacial form stress (EIFS)','Location','SouthEast');
+set(handle,'interpreter','latex');
+set(handle,'FontSize',fontsize+2);
 

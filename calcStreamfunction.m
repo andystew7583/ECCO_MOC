@@ -72,14 +72,15 @@ for n = 1:Nt
   disp(n);
   tstart = tic();
   
-  %%% Current date as a datenum (for v4r4 daily data)
-  thedate = startdate + n - 1;
-  fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];
-  disp(fileidstr);
+  %%% File naming system depends on ECCO version
+  if (isV4R4)
+    thedate = startdate + n - 1;
+    fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];        
+  else
+    fileidstr = num2str(n,'%.4d');    
+  end
   
   %%% Load volume fluxes in density bins
-%   UFLUX = read_nctiles([ufluxes_dir 'UFLUX' num2str(n)],'UFLUX',1:Nd);       
-%   VFLUX = read_nctiles([vfluxes_dir 'VFLUX' num2str(n)],'VFLUX',1:Nd); 
   UFLUX = read_nctiles([ufluxes_dir 'UFLUX' fileidstr],'UFLUX',1:Nd);       
   VFLUX = read_nctiles([vfluxes_dir 'VFLUX' fileidstr],'VFLUX',1:Nd); 
     

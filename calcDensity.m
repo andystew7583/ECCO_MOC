@@ -54,17 +54,24 @@ for n = 1:Nt
   
   disp(n);
   
-  %%% Current date as a datenum (for v4r4 daily data)
-  thedate = startdate + n - 1;
-  fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];
-  disp(fileidstr);
-  
+  if (isV4R4)
+    %%% Current date as a datenum (for v4r4 daily data)
+    thedate = startdate + n - 1;
+    fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];
+    disp(fileidstr);
+  else
+    fileidstr = num2str(n,'%.4d');
+  end
+    
   %%% Load potential temperature and salinity
   listVars={'THETA','SALT'};
   for vvv=1:length(listVars)
     vv=listVars{vvv};
-%     tmp1=read_nctiles([myenv.nctilesdir vv filesep vv],vv,n);        
-    tmp1 = read_nctiles_daily([myenv.nctilesdir vv filesep vv fileidstr '.nc'],vv);
+    if (isV4R4)
+      tmp1 = read_nctiles_daily([myenv.nctilesdir vv filesep vv fileidstr '.nc'],vv);
+    else
+      tmp1 = read_nctiles([myenv.nctilesdir vv filesep vv],vv,n);        
+    end    
     eval([vv '=tmp1;']);
   end
   

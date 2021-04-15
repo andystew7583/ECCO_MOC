@@ -5,7 +5,7 @@
 %%%
 
 %%% Set true for V4R4 with daily data, false for V4R3 with monthly data
-isV4R4 = false;
+isV4R4 = true;
 
 %%% Directories
 if (isV4R4)
