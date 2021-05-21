@@ -79,88 +79,55 @@ secDepth = secDepth(sortidx)';
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Set true to show perturbed state, false to show mean state
-fig_mode = 1;
+show_pert = true;
 
 %%% Plotting options
-framepos = [417    526   780   730];
+fontsize = 16;
+framepos = [417    526   1000   700];
 labelspacing = 200;
 axpos = zeros(1,4);
-axpos(1,:) = [0.12 0.1 0.86 0.8];
+axpos(1,:) = [0.08 0.1 0.9 0.8];
 cmap = [ ...
   14*16+4 15*16+6 15*16+8 ; ...
   8*16+7 12*16+14 15*16+10 ; ...
   ] / 255;
 darkblue = [0 0 8*16+11]/255;
-
-%%% Mode-dependent options
-switch (fig_mode)
-  
-  case 1
-    titlestr = 'Southern Ocean momentum balance';
-    WSlabel = 'Wind stress ($\mathrm{WS}$)';
-    IFSlabel = ['Isopycnal',char(10),'form stress ($\mathrm{IFS}$)'];  
-    TFSlabel = ['Topographic',char(10),'form stress ($\mathrm{TFS}$)'];
-    AABWlabel = ['$|f|\rho_0 {T_{\mathrm{AABW}}} \approx {\mathrm{IFS}} - {\mathrm{TFS}}$'];
-    WSlabel_x = -110;
-    IFSlabel_x = -80;
-    TFSlabel_x = 12;
-    WSlabel_y = -500;
-    IFSlabel_y = 700;
-    TFSlabel_y = 3500;
-    AABWlabel_x = -23;
-    AABWlabel_y = 2750;
-    WSlinewidth = 2;
-    IFSlinewidth = 2;
-    pfontsize = fontsize+2;
-    WSheadwidth = 10;
-    figlabel = '(a)';
-    IFSlinestyle = '-';
-    fontsize = 16;
-    
-  case 2
-    titlestr = 'Multi-annual mean state';
-    WSlabel = '$\overline{\mathrm{WS}}$';
-    IFSlabel = ['$\overline{\mathrm{IFS}} \approx |f|\rho_0 \overline{T_{\mathrm{AABW}}} + \overline{\mathrm{TFS}}$'];
-    TFSlabel = ['$\overline{\mathrm{TFS}} \approx \overline{\mathrm{WS}}$'];
-    AABWlabel = ['$\overline{T_{\mathrm{AABW}}}$'];
-    WSlabel_x = -97;
-    IFSlabel_x = -100;
-    TFSlabel_x = 25;
-    WSlabel_y = -500;
-    IFSlabel_y = 800;
-    TFSlabel_y = 3600;
-    AABWlabel_x = -10;
-    AABWlabel_y = 2800;
-    WSlinewidth = 2;
-    IFSlinewidth = 2;
-    pfontsize = fontsize + 8;
-    WSheadwidth = 15;
-    figlabel = '(b)';
-    IFSlinestyle = '-';
-    fontsize = 24;
-    
-  case 3
-    titlestr = 'Response to high-frequency winds';
-    WSlabel = '$\mathrm{WS}^\prime$';
-    IFSlabel = '$\mathrm{IFS}^\prime \approx 0$';  
-    TFSlabel = ['$\mathrm{TFS}^\prime \approx \mathrm{WS}^\prime$'];
-    AABWlabel = ['$|f|\rho_0 T_{\mathrm{AABW}}^\prime \approx - \mathrm{WS}^\prime$'];  
-    WSlabel_x = -97;
-    IFSlabel_x = -60;
-    TFSlabel_x = 25;
-    WSlabel_y = -500;
-    IFSlabel_y = 800;
-    TFSlabel_y = 3600;
-    AABWlabel_x = -23;
-    AABWlabel_y = 2750;
-    WSlinewidth = 4;
-    IFSlinewidth = 0.5;
-    pfontsize = fontsize + 8;
-    WSheadwidth = 15;
-    figlabel = '(c)';
-    IFSlinestyle = '--';
-    fontsize = 24;
-    
+if (show_pert)
+  titlestr = 'Response to high-frequency wind fluctuations';
+  WSlabel = '$\mathrm{WS}^\prime$';
+  IFSlabel = '$\mathrm{IFS}^\prime \approx 0$';  
+  TFSlabel = ['$\mathrm{TFS}^\prime \approx \mathrm{WS}^\prime$'];
+  AABWlabel = ['$|f|\rho_0 T_{\mathrm{AABW}}^\prime \approx - \mathrm{WS}^\prime$'];  
+  WSlabel_x = -117;
+  IFSlabel_x = -60;
+  TFSlabel_x = 30;
+  WSlabel_y = -500;
+  IFSlabel_y = 800;
+  TFSlabel_y = 3600;
+  WSlinewidth = 4;
+  IFSlinewidth = 0.5;
+  pfontsize = fontsize + 8;
+  WSheadwidth = 15;
+  figlabel = '(b)';
+  IFSlinestyle = '--';
+else
+  titlestr = 'Multi-decadal mean state';
+  WSlabel = 'Wind stress ($\overline{\mathrm{WS}}$)';
+  IFSlabel = ['Isopycnal',char(10),'form stress ($\overline{\mathrm{IFS}}$)'];  
+  TFSlabel = ['Topographic',char(10),'form stress ($\overline{\mathrm{TFS}}$)'];
+  AABWlabel = ['$|f|\rho_0 {T_{\mathrm{AABW}}} \approx {\mathrm{IFS}} - {\mathrm{TFS}}$'];
+  WSlabel_x = -130;
+  IFSlabel_x = -80;
+  TFSlabel_x = 12;
+  WSlabel_y = -500;
+  IFSlabel_y = 700;
+  TFSlabel_y = 3500;
+  WSlinewidth = 2;
+  IFSlinewidth = 2;
+  pfontsize = fontsize+2;
+  WSheadwidth = 10;
+  figlabel = '(a)';
+  IFSlinestyle = '-';
 end
 
 %%% cnoidal waveform for the surface
@@ -192,30 +159,29 @@ set(gca,'FontSize',fontsize);
 xlabel('Longitude');
 ylabel('Depth (m)')
 set(gca,'Position',axpos);
-set(gca,'XLim',[-110 110]);
 
 %%% Labels
+text(-15,800,'$p^+$','FontSize',pfontsize,'interpreter','latex','Color',darkblue);
+text(30,800,'$p^-$','FontSize',pfontsize,'interpreter','latex','Color',darkblue);
+text(62,3000,'$p^+$','FontSize',pfontsize,'interpreter','latex','Color',darkblue);
+text(90,3000,'$p^-$','FontSize',pfontsize,'interpreter','latex','Color',darkblue);
 text(IFSlabel_x,IFSlabel_y,IFSlabel,'FontSize',fontsize+2,'interpreter','latex');
 text(TFSlabel_x,TFSlabel_y,TFSlabel,'FontSize',fontsize+2,'interpreter','latex');
 text(WSlabel_x,WSlabel_y,WSlabel,'FontSize',fontsize+2,'interpreter','latex');
-text(AABWlabel_x,AABWlabel_y,AABWlabel,'FontSize',fontsize+2,'interpreter','latex');
+text(-23,2750,AABWlabel,'FontSize',fontsize+2,'interpreter','latex');
 
-if (fig_mode == 1)
-  text(-15,800,'$p^+$','FontSize',pfontsize,'interpreter','latex','Color',darkblue);
-  text(30,800,'$p^-$','FontSize',pfontsize,'interpreter','latex','Color',darkblue);
-  text(62,3000,'$p^+$','FontSize',pfontsize,'interpreter','latex','Color',darkblue);
-  text(90,3000,'$p^-$','FontSize',pfontsize,'interpreter','latex','Color',darkblue);
-  text(-70,4700,'Sea floor','FontSize',fontsize+2,'interpreter','latex');
-  text(-100,1900,'$\sigma_2 = 37.1$ kg/m$^3$','FontSize',fontsize+2,'interpreter','latex');
-  line([-51 -67.5],[2276 2050],'Color','k');
-  line([-73.5 -60],[4264 4550],'Color','k');
+if (~show_pert)
+  text(-150,5000,'Sea floor','FontSize',fontsize+2,'interpreter','latex');
+  text(100,1500,'$\sigma_2 = 37.1$ kg/m$^3$','FontSize',fontsize+2,'interpreter','latex');
+  line([103.5 113.5],[1914.15 1634.18],'Color','k');
+  line([-135.5 -123.5],[4800 4264.25],'Color','k');
 end
 
 %%% Form stress arows
-line([-90 -90],[-350 200],'Color',darkblue,'LineWidth',WSlinewidth);
+line([-110 -110],[-350 200],'Color',darkblue,'LineWidth',WSlinewidth);
 anArrow = annotation('arrow',[0.5 0.5],[0.5 0.5],'Color',darkblue,'LineWidth',WSlinewidth,'HeadStyle','plain','HeadWidth',WSheadwidth);
 anArrow.Parent = gca;
-anArrow.Position = [-90 200 25 0];
+anArrow.Position = [-110 200 25 0];
 line([-44 -44],[1000 1550],'Color',darkblue,'LineWidth',IFSlinewidth,'LineStyle',IFSlinestyle);
 anArrow = annotation('arrow',[0.5 0.5],[0.5 0.5],'Color',darkblue,'LineWidth',IFSlinewidth,'LineStyle',IFSlinestyle,'HeadStyle','plain');
 anArrow.Parent = gca;
@@ -226,21 +192,21 @@ anArrow.Parent = gca;
 anArrow.Position = [50 4350 25 0];
 
 %%% Add AABW arrow into the page
-if (fig_mode == 3)
-  annotation(gcf,'line',[0.57 0.523],[0.553 0.599],'LineWidth',1.5);
-  annotation(gcf,'line',[0.523 0.57],[0.553 0.599],'LineWidth',1.5);
-  annotation(gcf,'ellipse',[0.5135000000000001 0.544285714285714 0.0659999999999988 0.0642857142857139],'LineWidth',1.5);
+if (show_pert)
+  annotation(gcf,'line',[0.563 0.53],[0.553 0.599],'LineWidth',1.5);
+  annotation(gcf,'line',[0.53 0.563],[0.553 0.599],'LineWidth',1.5);
+  annotation(gcf,'ellipse',[0.5235000000000001 0.544285714285714 0.0459999999999988 0.0642857142857139],'LineWidth',1.5);
 else
-  annotation(gcf,'line',[0.576 0.517],[0.545 0.604],'LineWidth',1.5);
-  annotation(gcf,'line',[0.517 0.576],[0.545 0.604],'LineWidth',1.5);
-  annotation(gcf,'ellipse',[0.506000000000001 0.534285714285714 0.0809999999999988 0.0842857142857139],'LineWidth',1.5);
+  annotation(gcf,'line',[0.568 0.525],[0.545 0.604],'LineWidth',1.5);
+  annotation(gcf,'line',[0.525 0.568],[0.545 0.604],'LineWidth',1.5);
+  annotation(gcf,'ellipse',[0.516000000000001 0.534285714285714 0.0609999999999988 0.0842857142857139],'LineWidth',1.5);
 end
 
 %%% Add title
 title(titlestr);
 
 %%% Add figure label
-text(-130,6350,figlabel,'FontSize',fontsize+2,'interpreter','latex');
+text(-200,6350,figlabel,'FontSize',fontsize+2,'interpreter','latex');
 
 
 

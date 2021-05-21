@@ -33,7 +33,7 @@ while (thedate <= enddate)
   fname = [fname,varname,'/'];
   fname = [fname,varname,'_',datestr(thedate,'yyyy_mm_dd'),'.nc'];
   
-  wgetopts = '--content-disposition --trust-server-names --no-parent --user astewart7583 --password=eOxotM3khABKLd@DMB9';
+  wgetopts = '--content-disposition --trust-server-names --no-parent --user XXXXXX --password=XXXXXX'; %%% Did you think I'd leave my password here?
  
   %%% Increment by one day
   thedate = thedate + 1;

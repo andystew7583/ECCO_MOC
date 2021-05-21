@@ -12,8 +12,8 @@ addpath CDT/cdt;
 isopDefinitions;
 
 %%% Load streamfunction and mean isopycnal depths
-% load(fullfile(products_dir,'PSItot.mat'));
-% load(fullfile(products_dir,'Zisop_mean.mat'));
+load(fullfile(products_dir,'PSItot.mat'));
+load(fullfile(products_dir,'Zisop_mean.mat'));
 Nlats = length(lat);
 
 %%% Compute AABW transport
@@ -33,7 +33,7 @@ eof_maps(isnan(eof_maps)) = 0;
 
 %%% Compute FFTs
 pc1fft = fft(pc(1,:)) / std(pc(1,:)) / Nt;
-pc2fft = fft(pc(2,:)) / std(pc(1,:)) / Nt;
+pc2fft = fft(pc(2,:)) / std(pc(2,:)) / Nt;
 PSIfft = fft(PSImean) / Nt;
 pc1fft(1) = 0;
 pc2fft(1) = 0;
@@ -116,7 +116,7 @@ text(-40,4900,num2str(dens_levs(Zisop_idx(5))-1000),'FontSize',fontsize,'Color',
 
 anArrow = annotation(gcf,'arrow',[0 0],[0 0]);
 anArrow.Parent = gca;
-anArrow.Position = [-20 5000 20 0];
+anArrow.Position = [-20 5000 20 0];0
 anArrow = annotation(gcf,'arrow',[0 0],[0 0]);
 anArrow.Parent = gca;
 anArrow.Position = [0 3000 -20 0];
@@ -233,21 +233,21 @@ text(-77,dticks(3),['Exp. var.: ',num2str(expvar(2),'%.0f'),'%'],'FontSize',font
 %%% Spectra
 subplot('Position',axpos(5,:));
 colororder = get(gca,'ColorOrder');
-p1 = loglog(TT,abs(PSIfft(1:Nt/2))/1e6);
+p1 = semilogx(TT,1-2*cumsum(abs(PSIfft(1:Nt/2).^2))/var(PSImean));
 hold on
-p2 = loglog(TT,abs(pc1fft(1:Nt/2)));
-p3 = loglog(TT,abs(pc2fft(1:Nt/2)),'Color',colororder(4,:));
+p2 = semilogx(TT,1-2*cumsum(abs(pc1fft(1:Nt/2).^2))); % loglog(TT,abs(pc1fft(1:Nt/2)));
+p3 = semilogx(TT,1-2*cumsum(abs(pc2fft(1:Nt/2).^2)),'Color',colororder(4,:)); % loglog(TT,abs(pc2fft(1:Nt/2)),'Color',colororder(4,:));
 hold off
 axis tight
 xlabel('Period (days)');
-ylabel('Spectral power');
+ylabel('Cumulative variance');
 set(gca,'XTick',([3 10 30 100 300 1000 3000]));
 set(gca,'FontSize',fontsize);
 % p2.Color(4) = 0.25;
 p3.Color(4) = 0.5;
-handle = legend('Abyssal overturning $T_{\mathrm{AABW}}$ (Sv)','1st principal component','2nd principal component','Location','SouthEast');;
-
+handle = legend('Abyssal overturning $T_{\mathrm{AABW}}$ (Sv)','1st principal component','2nd principal component','Location','SouthEast');
 set(handle,'interpreter','latex');
+grid on;
 
 for n=1:size(axpos,1)
   annotation('TextBox',[axpos(n,1)-0.05 axpos(n,2)-0.05 0.03 0.03],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);

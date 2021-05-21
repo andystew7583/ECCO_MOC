@@ -98,7 +98,7 @@ hold off;
 set(gca,'XLim',[-1 endIdx-1]);
 set(gca,'YLim',ylim);
 xlabel('Lag time \tau (days)');
-ylabel('Response function');
+ylabel('Normalized response to a step change in wind stress');
 set(gca,'FontSize',fontsize);
 box on;
 
@@ -126,7 +126,7 @@ set(gca,'YTickLabel','');
 xlabel('Lag time \tau (years)');
 set(gca,'FontSize',fontsize);
 box on;
-handle = legend('AABW flux ($T_{\mathrm{AABW}}$)','Topographic form stress (TFS)','Mean interfacial form stress (MIFS)','Eddy interfacial form stress (EIFS)','Location','SouthEast');
+handle = legend('Northward AABW transport ($T_{\mathrm{AABW}}$)','Topographic form stress (TFS)','Resolved isopycnal form stress (RIFS$_\mathrm{AABW}$)','Eddy isopycnal form stress (EIFS$_\mathrm{AABW}$)','Location','SouthEast');
 set(handle,'interpreter','latex');
 set(handle,'FontSize',fontsize+2);
 
