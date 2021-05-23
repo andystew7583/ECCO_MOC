@@ -79,6 +79,7 @@ colormap(gca,cmocean('balance',40));
 % colormap(redblue(40));
 cbhandle = colorbar;
 set(cbhandle,'Position',cbpos);
+title(cbhandle,'(Sv)');
 caxis([-psimax psimax]);
 axis([ymin ymax_GO 0 6000]);
 set(gca,'YDir','reverse');
@@ -107,6 +108,7 @@ jmax = find(lat<=-50,1,'last');
 plot(lat(jmin:jmax),-Zisop_plot(jmin:jmax,dval),'w--','LineWidth',1.5);
 plot(lat([jmin jmax]),-Zisop_plot([jmin jmax],dval),'wo');
 hold off;
+text(-75,5500,['\psi(\phi,z)'],'FontSize',fontsize);
 
 text(22,430,num2str(dens_levs(Zisop_idx(1))-1000),'FontSize',fontsize,'Color',[.5 .5 .5]);
 text(47,870,num2str(dens_levs(Zisop_idx(2))-1000),'FontSize',fontsize,'Color',[.5 .5 .5]);
@@ -248,6 +250,7 @@ p3.Color(4) = 0.5;
 handle = legend('Abyssal overturning $T_{\mathrm{AABW}}$ (Sv)','1st principal component','2nd principal component','Location','SouthEast');
 set(handle,'interpreter','latex');
 grid on;
+% text(1.5,0.9,['\psi(\phi,z)'],'FontSize',fontsize);
 
 for n=1:size(axpos,1)
   annotation('TextBox',[axpos(n,1)-0.05 axpos(n,2)-0.05 0.03 0.03],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);

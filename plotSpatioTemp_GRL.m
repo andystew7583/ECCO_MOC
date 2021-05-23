@@ -101,6 +101,7 @@ xlabel('Lag time \tau (days)');
 ylabel('Normalized response to a step change in wind stress');
 set(gca,'FontSize',fontsize);
 box on;
+grid on;
 
 %%% Long timescale response
 subplot('Position',axpos(2,:));
@@ -129,4 +130,5 @@ box on;
 handle = legend('Northward AABW transport ($T_{\mathrm{AABW}}$)','Topographic form stress (TFS)','Resolved isopycnal form stress (RIFS$_\mathrm{AABW}$)','Eddy isopycnal form stress (EIFS$_\mathrm{AABW}$)','Location','SouthEast');
 set(handle,'interpreter','latex');
 set(handle,'FontSize',fontsize+2);
+grid on;
 
