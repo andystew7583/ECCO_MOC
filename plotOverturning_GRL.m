@@ -255,3 +255,195 @@ grid on;
 for n=1:size(axpos,1)
   annotation('TextBox',[axpos(n,1)-0.05 axpos(n,2)-0.05 0.03 0.03],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);
 end
+
+
+
+
+
+
+
+
+
+
+%%% Load mean and eddy components of overturning
+load(fullfile(products_dir,'PSIbol.mat'))
+PSIbol = PSI;
+load(fullfile(products_dir,'PSIeul.mat'))
+PSIeul = PSI;
+PSI = PSIeul + PSIbol;
+
+%%% Load IFS and subtract TFS
+load(fullfile(products_dir,'IFS.mat'))
+IFSmean = mean(IFS,3);
+IFSmean = IFSmean - repmat(IFSmean(:,end),[1 length(dens_bnds)]);
+
+%%% Coriolis parameter matrix on IFS points
+Omega = 366/365*2*pi/86400;
+ff = 2*Omega*sind(secLats);
+FF = repmat(ff',[1 length(dens_bnds)]);
+EFSmean = zeros(length(secLats),Nd+1);
+for m=1:Nd+1
+  EFSmean(:,m) = interp1(lat,mean(PSIbol(:,m),3),secLats,'linear');
+end
+EFSmean = -EFSmean.*rhoConst.*FF;
+
+%%% Plotting options
+fontsize = 14;
+framepos = [417    526   891   900];
+labelspacing = 200;
+axpos = zeros(5,4);
+axpos(1,:) = [0.08 0.69 0.37 0.27];
+axpos(2,:) = [0.55 0.69 0.37 0.27];
+axpos(3,:) = [0.08 0.37 0.37 0.27];
+axpos(4,:) = [0.55 0.37 0.37 0.27];
+axpos(5,:) = [0.08 0.05 0.37 0.27];
+cbpos = [0.94 0.05 0.02 0.91];
+axlabels = {'(a)','(b)','(c)','(d)','(e)'};
+linewidth = 1.5;
+xticks = [-80 -40 0 40 80];
+dticks = [11 19 27 36 43 53 63 75 87 99 109 119 129];
+dticklabels = {'28','30','32','34','35','35.5','36','36.3','36.6','36.9','37','37.1','37.2'};
+
+%%% Set up figure window
+handle = figure(206);
+clf;
+set(handle,'Position',framepos);
+
+
+%%% Global residual overturning
+subplot('Position',axpos(1,:));
+% [DD,LL] = meshgrid(dens_bnds,lat);
+[DD,LL] = meshgrid(1:Nd+1,lat);
+% pcolor(LL,DD-1000,mean(PSI,3)/1e6);
+pcolor(LL,DD,mean(PSI,3)/1e6);
+shading interp;
+colormap(gca,cmocean('balance',40));
+% colorbar;
+caxis([-psimax psimax]);
+set(gca,'YLim',[dticks(1) dticks(end)]);
+set(gca,'YTick',dticks);
+set(gca,'YTickLabel',dticklabels);
+set(gca,'YDir','reverse');
+set(gca,'FontSize',fontsize);
+set(gca,'Color',[.8 .8 .8]);
+% xlabel('Latitude \phi');
+ylabel('Density \sigma_2 (kg/m^3)');
+text(-84,dticks(2),['\psi(\phi,\sigma_2)'],'FontSize',fontsize);
+set(gca,'XTick',xticks);
+title('Diagnosed from volume fluxes');
+
+%%% Global IFS
+subplot('Position',axpos(2,:));
+% [DD,LL] = meshgrid(dens_bnds,lat);
+[DD,LL] = meshgrid(1:Nd+1,secLats);
+% pcolor(LL,DD-1000,mean(PSI,3)/1e6);
+pcolor(LL,DD,-(IFSmean+EFSmean)./rhoConst./FF/1e6);
+shading interp;
+colormap(gca,cmocean('balance',40));
+% colorbar;
+caxis([-psimax psimax]);
+set(gca,'YLim',[dticks(1) dticks(end)]);
+set(gca,'YTick',dticks);
+set(gca,'YTickLabel',dticklabels);
+set(gca,'YDir','reverse');
+set(gca,'FontSize',fontsize);
+set(gca,'Color',[.8 .8 .8]);
+% xlabel('Latitude \phi');
+ylabel('Density \sigma_2 (kg/m^3)');
+text(-84,dticks(2),['\psi(\phi,\sigma_2)'],'FontSize',fontsize);
+set(gca,'XTick',xticks);
+title('Reconstructed from IFS');
+
+%%% Global resolved overturning
+subplot('Position',axpos(3,:));
+% [DD,LL] = meshgrid(dens_bnds,lat);
+[DD,LL] = meshgrid(1:Nd+1,lat);
+% pcolor(LL,DD-1000,mean(PSI,3)/1e6);
+pcolor(LL,DD,mean(PSIeul,3)/1e6);
+shading interp;
+colormap(gca,cmocean('balance',40));
+% colorbar;
+caxis([-psimax psimax]);
+set(gca,'YLim',[dticks(1) dticks(end)]);
+set(gca,'YTick',dticks);
+set(gca,'YTickLabel',dticklabels);
+set(gca,'YDir','reverse');
+set(gca,'FontSize',fontsize);
+set(gca,'Color',[.8 .8 .8]);
+% xlabel('Latitude \phi');
+ylabel('Density \sigma_2 (kg/m^3)');
+text(-84,dticks(2),['\psi_r(\phi,\sigma_2)'],'FontSize',fontsize);
+set(gca,'XTick',xticks);
+
+%%% Global resolved IFS
+subplot('Position',axpos(4,:));
+% [DD,LL] = meshgrid(dens_bnds,lat);
+[DD,LL] = meshgrid(1:Nd+1,secLats);
+% pcolor(LL,DD-1000,mean(PSI,3)/1e6);
+pcolor(LL,DD,-IFSmean./rhoConst./FF/1e6);
+shading interp;
+colormap(gca,cmocean('balance',40));
+% colorbar;
+caxis([-psimax psimax]);
+set(gca,'YLim',[dticks(1) dticks(end)]);
+set(gca,'YTick',dticks);
+set(gca,'YTickLabel',dticklabels);
+set(gca,'YDir','reverse');
+set(gca,'FontSize',fontsize);
+set(gca,'Color',[.8 .8 .8]);
+xlabel('Latitude \phi');
+ylabel('Density \sigma_2 (kg/m^3)');
+text(-84,dticks(2),['\psi_r(\phi,\sigma_2)'],'FontSize',fontsize);
+set(gca,'XTick',xticks);
+
+%%% Global eddy overturning
+subplot('Position',axpos(5,:));
+% [DD,LL] = meshgrid(dens_bnds,lat);
+[DD,LL] = meshgrid(1:Nd+1,lat);
+% pcolor(LL,DD-1000,mean(PSI,3)/1e6);
+pcolor(LL,DD,mean(PSIbol,3)/1e6);
+shading interp;
+colormap(gca,cmocean('balance',40));
+% colorbar;
+caxis([-psimax psimax]);
+set(gca,'YLim',[dticks(1) dticks(end)]);
+set(gca,'YTick',dticks);
+set(gca,'YTickLabel',dticklabels);
+set(gca,'YDir','reverse');
+set(gca,'FontSize',fontsize);
+set(gca,'Color',[.8 .8 .8]);
+xlabel('Latitude \phi');
+ylabel('Density \sigma_2 (kg/m^3)');
+text(-84,dticks(2),['\psi_e(\phi,\sigma_2)'],'FontSize',fontsize);
+set(gca,'XTick',xticks);
+
+% %%% Global eddy IFS
+% subplot('Position',axpos(6,:));
+% % [DD,LL] = meshgrid(dens_bnds,lat);
+% [DD,LL] = meshgrid(1:Nd+1,secLats);
+% % pcolor(LL,DD-1000,mean(PSI,3)/1e6);
+% pcolor(LL,DD,-EFSmean./rhoConst./FF/1e6);
+% shading interp;
+% colormap(gca,cmocean('balance',40));
+% % colorbar;
+% caxis([-psimax psimax]);
+% set(gca,'YLim',[dticks(1) dticks(end)]);
+% set(gca,'YTick',dticks);
+% set(gca,'YTickLabel',dticklabels);
+% set(gca,'YDir','reverse');
+% set(gca,'FontSize',fontsize);
+% set(gca,'Color',[.8 .8 .8]);
+% xlabel('Latitude \phi');
+% ylabel('Density \sigma_2 (kg/m^3)');
+% text(-82,dticks(2),['\psi(\phi,\sigma_2)'],'FontSize',fontsize);
+% set(gca,'XTick',xticks);
+
+%%% Create colorbar
+handle = colorbar;
+set(handle,'Position',cbpos);
+title(handle,'(Sv)');
+
+%%% Add labels
+for n=1:size(axpos,1)
+  annotation('TextBox',[axpos(n,1)-0.05 axpos(n,2)-0.05 0.03 0.03],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);
+end
