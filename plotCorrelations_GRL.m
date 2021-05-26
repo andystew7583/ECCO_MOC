@@ -73,10 +73,10 @@ fontsize = 14;
 framepos = [417    526   791   800];
 labelspacing = 200;
 axpos = zeros(4,4);
-axpos(1,:) = [0.08 0.57 0.4 0.4];
-axpos(2,:) = [0.58 0.57 0.4 0.4];
-axpos(3,:) = [0.08 0.3 0.9 0.19];
-axpos(4,:) = [0.08 0.06 0.9 0.19];
+axpos(1,:) = [0.08 0.57 0.39 0.4];
+axpos(2,:) = [0.57 0.57 0.39 0.4];
+axpos(3,:) = [0.08 0.3 0.88 0.19];
+axpos(4,:) = [0.08 0.06 0.88 0.19];
 cbpos = [0.95 0.37 0.015 0.6];
 axlabels = {'(a)','(b)','(c)','(c)'};
 linewidth = 1.5;
@@ -137,6 +137,7 @@ set(gca,'XLim',[tt(15) tt(end/2)]);
 set(gca,'YLim',[-19 22]);
 leghandle = legend('Diagnosed','Reconstructed from wind stress','interpreter','latex','Location','NorthEast');
 set(leghandle,'Orientation','horizontal');
+box off;
 
 %%% Actual vs predicted AABW transports with running monthly filters
 subplot('Position',axpos(4,:));
@@ -150,10 +151,13 @@ set(gca,'FontSize',fontsize);
 datetick('x')
 set(gca,'XLim',[tt(end/2+1) tt(end-14)]);
 set(gca,'YLim',[-19 22]);
+set(gca,'YAxisLocation','Right');
+box off;
 
 %%% Add panel labels
-for n=[1 2 4]
-  annotation('TextBox',[axpos(n,1)-0.05 axpos(n,2)-0.05 0.03 0.03],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);
+for n=[1 2 3]
+%   annotation('TextBox',[axpos(n,1)-0.05 axpos(n,2)-0.05 0.03 0.03],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);
+  annotation('TextBox',[axpos(n,1) axpos(n,2)+axpos(n,4)+0.02 0.01 0.01],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);
 end
 
 

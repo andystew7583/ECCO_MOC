@@ -34,9 +34,11 @@ eof_maps(isnan(eof_maps)) = 0;
 %%% Compute FFTs
 pc1fft = fft(pc(1,:)) / std(pc(1,:)) / Nt;
 pc2fft = fft(pc(2,:)) / std(pc(2,:)) / Nt;
+pc3fft = fft(pc(3,:)) / std(pc(3,:)) / Nt;
 PSIfft = fft(PSImean) / Nt;
 pc1fft(1) = 0;
 pc2fft(1) = 0;
+pc3fft(1) = 0;
 PSIfft(1) = 0;
 TT = Nt ./ (0:1:Nt/2-1);
 
@@ -237,8 +239,9 @@ subplot('Position',axpos(5,:));
 colororder = get(gca,'ColorOrder');
 p1 = semilogx(TT,1-2*cumsum(abs(PSIfft(1:Nt/2).^2))/var(PSImean));
 hold on
-p2 = semilogx(TT,1-2*cumsum(abs(pc1fft(1:Nt/2).^2))); % loglog(TT,abs(pc1fft(1:Nt/2)));
-p3 = semilogx(TT,1-2*cumsum(abs(pc2fft(1:Nt/2).^2)),'Color',colororder(4,:)); % loglog(TT,abs(pc2fft(1:Nt/2)),'Color',colororder(4,:));
+p2 = semilogx(TT,(1-2*cumsum(abs(pc1fft(1:Nt/2).^2)))*expvar(1)/100); % loglog(TT,abs(pc1fft(1:Nt/2)));
+p3 = semilogx(TT,(1-2*cumsum(abs(pc2fft(1:Nt/2).^2)))*expvar(2)/100,'Color',colororder(4,:)); % loglog(TT,abs(pc2fft(1:Nt/2)),'Color',colororder(4,:));
+p4 = semilogx(TT,(1-2*cumsum(abs(pc3fft(1:Nt/2).^2)))*expvar(3)/100,'Color',colororder(5,:)); % loglog(TT,abs(pc2fft(1:Nt/2)),'Color',colororder(4,:));
 hold off
 axis tight
 xlabel('Period (days)');
@@ -247,13 +250,13 @@ set(gca,'XTick',([3 10 30 100 300 1000 3000]));
 set(gca,'FontSize',fontsize);
 % p2.Color(4) = 0.25;
 p3.Color(4) = 0.5;
-handle = legend('Abyssal overturning $T_{\mathrm{AABW}}$ (Sv)','1st principal component','2nd principal component','Location','SouthEast');
+handle = legend('Abyssal overturning $T_{\mathrm{AABW}}$ (Sv)','1st principal component','2nd principal component','3rd principal component','Location','NorthWest');
 set(handle,'interpreter','latex');
 grid on;
 % text(1.5,0.9,['\psi(\phi,z)'],'FontSize',fontsize);
 
 for n=1:size(axpos,1)
-  annotation('TextBox',[axpos(n,1)-0.05 axpos(n,2)-0.05 0.03 0.03],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);
+  annotation('TextBox',[axpos(n,1) axpos(n,2)+axpos(n,4)+0.017 0.01 0.01],'String',axlabels{n},'EdgeColor','None','FontSize',fontsize);
 end
 
 

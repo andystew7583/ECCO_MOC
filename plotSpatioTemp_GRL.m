@@ -75,6 +75,12 @@ figure(204);
 clf;
 set(gcf,'Position',framepos);   
 
+%%% Residual and stdev of residual
+total_CRF = mean(PSI_WS_CRF,2) - mean(TFS_WS_CRF,2) + mean(IFS_WS_CRF,2) + mean(EFS_WS_CRF,2);
+total_err = sqrt(PSI_WS_err.^2+TFS_WS_err.^2+IFS_WS_err.^2+EFS_WS_err.^2);
+total_CRF_smooth = mean(PSI_WS_CRF_smooth,2) - mean(TFS_WS_CRF_smooth,2) + mean(IFS_WS_CRF_smooth,2) + mean(EFS_WS_CRF_smooth,2);
+total_err_smooth = sqrt(PSI_WS_err_smooth.^2+TFS_WS_err_smooth.^2+IFS_WS_err_smooth.^2+EFS_WS_err_smooth.^2);
+
 %%% Short timescale response
 subplot('Position',axpos(1,:));
 colororder = get(gca,'ColorOrder');
@@ -92,6 +98,7 @@ hold on
 shadedErrorBar(tt_plot,-mean(TFS_WS_CRF(1:endIdx,:),2),TFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(2,:)});
 shadedErrorBar(tt_plot,-mean(IFS_WS_CRF(1:endIdx,:),2),IFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(3,:)});
 shadedErrorBar(tt_plot,-mean(EFS_WS_CRF(1:endIdx,:),2),EFS_WS_err(1:endIdx,:),'lineProps',{'Color',colororder(4,:)});
+% shadedErrorBar(tt_plot,-mean(total_CRF(1:endIdx,:),2),total_err(1:endIdx,:),'lineProps',{'Color',colororder(5,:)});
 plot([-1 tt_plot],0*[-1 tt_plot],'k--');
 plot([0 0],ylim,'k:');
 hold off;
@@ -102,6 +109,8 @@ ylabel('Normalized response to a step change in wind stress');
 set(gca,'FontSize',fontsize);
 box on;
 grid on;
+
+
 
 %%% Long timescale response
 subplot('Position',axpos(2,:));
@@ -119,6 +128,8 @@ hold on;
 shadedErrorBar(tt_plot,-mean(TFS_WS_CRF_smooth(endIdx+1:end,:),2),TFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(2,:)});
 shadedErrorBar(tt_plot,-mean(IFS_WS_CRF_smooth(endIdx+1:end,:),2),IFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(3,:)});
 shadedErrorBar(tt_plot,-mean(EFS_WS_CRF_smooth(endIdx+1:end,:),2),EFS_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(4,:)});
+% shadedErrorBar(tt_plot,mean(total_CRF_smooth(endIdx+1:end,:),2),total_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(5,:)});
+% shadedErrorBar(tt_plot,mean(PSI_WS_CRF_smooth(endIdx+1:end,:),2),PSI_WS_err_smooth(endIdx+1:end,:),'lineProps',{'Color',colororder(1,:)});
 plot(tt_plot,0*tt_plot,'k--');
 hold off;
 set(gca,'YLim',ylim);
@@ -127,7 +138,7 @@ set(gca,'YTickLabel','');
 xlabel('Lag time \tau (years)');
 set(gca,'FontSize',fontsize);
 box on;
-handle = legend('Northward AABW transport ($T_{\mathrm{AABW}}$)','Topographic form stress (TFS)','Resolved isopycnal form stress (RIFS$_\mathrm{AABW}$)','Eddy isopycnal form stress (EIFS$_\mathrm{AABW}$)','Location','SouthEast');
+handle = legend('Northward AABW transport ($T_{\mathrm{AABW}}$)','Topographic form stress (TFS)','Resolved interfacial form stress (RIFS$_\mathrm{AABW}$)','Eddy interfacial form stress (EIFS$_\mathrm{AABW}$)','Location','SouthEast');
 set(handle,'interpreter','latex');
 set(handle,'FontSize',fontsize+2);
 grid on;
