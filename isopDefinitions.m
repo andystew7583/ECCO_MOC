@@ -5,7 +5,7 @@
 %%%
 
 %%% Set true for V4R4 with daily data, false for V4R3 with monthly data
-isV4R4 = true;
+isV4R4 = false;
 
 %%% Directories
 if (isV4R4)
@@ -76,4 +76,7 @@ nDblRes = 3;
 psitype = 'tot';
 
 %%% Set true to compute only Atlantic MOC
-psiAtlOnly = true;
+%%% 'AtlPac' -> Atlantic and Indo-Pacific basins
+%%% 'AtlOnly' -> Atlantic only
+%%% 'PacOnly' -> Indo-Pacific only
+regionType = 'AtlOnly';

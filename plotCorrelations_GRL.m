@@ -53,7 +53,7 @@ tt = startdate + (0:Nt-1);
 %%% Compute correlations and NSE between wind, form stresses, and AABW
 %%% export
 % smoothlens = [1:2:5*365];
-smoothlens = [1:2:10 15:5:100 150:50:1000 1100:100:1500];
+smoothlens = [1:2:10 15:5:100 150:50:1000 1100:100:1500 2000:500:6000];
 [r_WS_PSI,p_WS_PSI,rmin_WS_PSI,NSE_WS_PSI] = calcRelationships(WSmean,-PSImean*rhoConst*mean(ff(yidx_ifs)),smoothlens);
 [r_WS_TFS,p_WS_TFS,rmin_WS_TFS,NSE_WS_TFS] = calcRelationships(WSmean,-TFSmean,smoothlens);
 [r_WS_IFS,p_WS_IFS,rmin_WS_IFS,NSE_WS_IFS] = calcRelationships(WSmean,-IFSmean,smoothlens);
@@ -94,14 +94,15 @@ semilogx(smoothlens,r_WS_PSI,'Color',colororder(1,:),'LineWidth',linewidth);
 hold on;
 semilogx(smoothlens,r_WS_TFS,'Color',colororder(4,:),'LineWidth',linewidth);
 semilogx(smoothlens,r_WS_IFS,'Color',colororder(3,:),'LineWidth',linewidth);
-ahandle = area(smoothlens,rmin_WS_PSI);
+ahandle = area(smoothlens,max([rmin_WS_PSI;rmin_WS_TFS;rmin_WS_IFS],[],1));
 ahandle.FaceColor = [.8 .8 .8];
 ahandle.FaceAlpha = 0.5;
 ahandle.EdgeColor = 'None';
 hold off;
 xlabel('Smoothing window (days)','interpreter','latex');
 ylabel('Correlation with Wind Stress (WS)','interpreter','latex');
-set(gca,'XTick',([1 3 10 30 100 300 1000]));
+set(gca,'XTick',([1 3 10 30 100 300 1000 3000 10000]));
+set(gca,'XLim',[1 6000]);
 set(gca,'FontSize',fontsize);
 legend('$-T_\mathrm{AABW}$','TFS','IFS$_\mathrm{AABW}$','interpreter','latex','Location','SouthWest');
 grid on;
@@ -111,14 +112,15 @@ semilogx(smoothlens,r_PSI_TFS,'Color',colororder(5,:),'LineWidth',linewidth);
 hold on;
 semilogx(smoothlens,r_PSI_IFS,'Color',colororder(6,:),'LineWidth',linewidth);
 semilogx(smoothlens,r_PSI_TFSIFS,'Color',colororder(7,:),'LineWidth',linewidth);
-ahandle = area(smoothlens,rmin_PSI_TFS);
+ahandle = area(smoothlens,max([rmin_PSI_TFS;rmin_PSI_IFS;rmin_PSI_TFSIFS],[],1));
 ahandle.FaceColor = [.8 .8 .8];
 ahandle.FaceAlpha = 0.5;
 ahandle.EdgeColor = 'None';
 hold off;
 xlabel('Smoothing window (days)','interpreter','latex');
 ylabel('Correlation with AABW flux ($T_\mathrm{AABW}$)','interpreter','latex');
-set(gca,'XTick',([1 3 10 30 100 300 1000]));
+set(gca,'XTick',([1 3 10 30 100 300 1000 3000 10000]));
+set(gca,'XLim',[1 6000]);
 set(gca,'FontSize',fontsize);
 legend('$-$TFS','IFS$_\mathrm{AABW}$','IFS$_\mathrm{AABW}-$TFS','interpreter','latex','Location','West');
 grid on;
@@ -139,7 +141,7 @@ leghandle = legend('Diagnosed','Reconstructed from wind stress','interpreter','l
 set(leghandle,'Orientation','horizontal');
 box off;
 
-%%% Actual vs predicted AABW transports with running monthly filters
+%%% Actual vs predicted AABW transports with running monthly fifters
 subplot('Position',axpos(4,:));
 plot(tt,-smooth(PSImean-mean(PSImean),30)/1e6,'Color',colororder(1,:),'LineWidth',linewidth);
 hold on;
@@ -199,7 +201,14 @@ end
 NSE_map(isnan(r_map)) = NaN;
 
 
-
+%%% Find lowest density in each water column
+mindens = nan(size(lat));
+for j=1:length(mindens)
+  idx = find(abs(mean(PSI(j,:,:),3))>10e5,1);
+  if (~isempty(idx))
+    mindens(j) = idx-1;
+  end
+end
 
 
 
@@ -228,6 +237,9 @@ subplot('Position',axpos(1,:));
 [DD,LL] = meshgrid(1:Nd+1,secLats);
 pcolor(LL,DD,r_map);
 shading interp;
+hold on;
+plot(lat,mindens,'LineWidth',1.5,'Color',[.6 .6 .6],'LineStyle','--');
+hold off;
 colormap(gca,cmocean('balance',20));
 colorbar;
 % set(gca,'XLim',[ymin ymax_SO]);
@@ -248,6 +260,9 @@ subplot('Position',axpos(2,:));
 % pcolor(LL,DD,1./(2-NSE_map));
 pcolor(LL,DD,NSE_map);
 shading interp;
+hold on;
+plot(lat,mindens,'LineWidth',1.5,'Color',[.5 .5 .5],'LineStyle','--');
+hold off;
 colormap(gca,cmocean('amp',10));
 colorbar;
 % set(gca,'XLim',[ymin ymax_SO]);
@@ -326,7 +341,7 @@ function [r,p,rmin,NSE] = calcRelationships (X,Y,smoothlens)
     
     %%% Compute min. correlation coefficient for statistical significance
     r0 = 0; %%% Initial guess for iteration
-    p0 = 0.01; %%% Statistical significance criterion            
+    p0 = 0.05; %%% Statistical significance criterion            
     Neff = N_smooth/Te;
     opts1=  optimset('display','off');
     rmin(m) = lsqnonlin(@(r) calcPval(r,Neff)-p0,r0,0,1,opts1);   

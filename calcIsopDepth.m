@@ -52,17 +52,41 @@ for j = 1:Nlats
   mygrid.LATS_MASKS(j).mskSedge = abs(mygrid.LATS_MASKS(j).mskSedge);
 end
 
+%%% Modify latitude masks based on selected region type
+switch (regionType)
 
+  case 'AtlOnly'
+    [atlMskC,atlMskW,atlMskS] = v4_basin('atlExt');
+    for j=1:length(mygrid.LATS_MASKS)
+      mygrid.LATS_MASKS(j).mskCint = mygrid.LATS_MASKS(j).mskCint .* atlMskC;
+      mygrid.LATS_MASKS(j).mskCedge = mygrid.LATS_MASKS(j).mskCedge .* atlMskC;
+      mygrid.LATS_MASKS(j).mskWedge = mygrid.LATS_MASKS(j).mskWedge .* atlMskW;
+      mygrid.LATS_MASKS(j).mskSedge = mygrid.LATS_MASKS(j).mskSedge .* atlMskS;
+    end
+
+  case 'PacOnly'
+    [pacMskC,pacMskW,pacMskS] = v4_basin('pacExt');
+    [indMskC,indMskW,indMskS] = v4_basin('indExt');
+    for j=1:length(mygrid.LATS_MASKS)
+      mygrid.LATS_MASKS(j).mskCint = mygrid.LATS_MASKS(j).mskCint .* (pacMskC+indMskC);
+      mygrid.LATS_MASKS(j).mskCedge = mygrid.LATS_MASKS(j).mskCedge .* (pacMskC+indMskC);
+      mygrid.LATS_MASKS(j).mskWedge = mygrid.LATS_MASKS(j).mskWedge .* (pacMskW+indMskW);
+      mygrid.LATS_MASKS(j).mskSedge = mygrid.LATS_MASKS(j).mskSedge .* (pacMskS+indMskS);
+    end
+    
+  case 'AtlPac'
+    %%% Do nothing
+    
+  otherwise
+    error('Unrecognized region type specified in isopDefinitions');
+    
+end
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%% CALCULATE AREA ABOVE GEOPOTENTIALS %%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%% To store computed depths
-zisop = zeros(Nlats,Nd,Nt);
-zisop_mean = zeros(Nlats,Nd);
 
 %%% Calculate cell face areas 
 AREAW_z = mygrid.mskW .* mygrid.hFacW .* dyg .* drf;
@@ -159,7 +183,7 @@ end
 
 %%% Write to a .mat file
 lat = [mygrid.LATS_MASKS.lat];
-save([products_dir 'Zisop.mat'],'dens_levs','dens_bnds','lat','Aisop','Aocean','Zisop','Aisop_mean','Zisop_mean');
+save([products_dir 'Zisop_',regionType,'.mat'],'dens_levs','dens_bnds','lat','Aisop','Aocean','Zisop','Aisop_mean','Zisop_mean');
 
 %%% Close Matlab
 exit;

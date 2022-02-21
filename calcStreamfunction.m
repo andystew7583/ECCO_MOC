@@ -42,16 +42,34 @@ drf = mk3D(mygrid.DRF,mygrid.hFacC);
 dxg = mk3D(mygrid.DXG,mygrid.hFacC);
 dyg = mk3D(mygrid.DYG,mygrid.hFacC);
 
-%%% If only Atlantic overturning is desired, mask out other basins in
-%%% latitude line masks
-if (psiAtlOnly)
-  [atlMskC,atlMskW,atlMskS] = v4_basin('atlExt');
-  for j=1:length(mygrid.LATS_MASKS)
-    mygrid.LATS_MASKS(j).mskCint = mygrid.LATS_MASKS(j).mskCint .* atlMskC;
-    mygrid.LATS_MASKS(j).mskCedge = mygrid.LATS_MASKS(j).mskCedge .* atlMskC;
-    mygrid.LATS_MASKS(j).mskWedge = mygrid.LATS_MASKS(j).mskWedge .* atlMskW;
-    mygrid.LATS_MASKS(j).mskSedge = mygrid.LATS_MASKS(j).mskSedge .* atlMskS;
-  end
+%%% Modify latitude masks based on selected region type
+switch (regionType)
+
+  case 'AtlOnly'
+    [atlMskC,atlMskW,atlMskS] = v4_basin('atlExt');
+    for j=1:length(mygrid.LATS_MASKS)
+      mygrid.LATS_MASKS(j).mskCint = mygrid.LATS_MASKS(j).mskCint .* atlMskC;
+      mygrid.LATS_MASKS(j).mskCedge = mygrid.LATS_MASKS(j).mskCedge .* atlMskC;
+      mygrid.LATS_MASKS(j).mskWedge = mygrid.LATS_MASKS(j).mskWedge .* atlMskW;
+      mygrid.LATS_MASKS(j).mskSedge = mygrid.LATS_MASKS(j).mskSedge .* atlMskS;
+    end
+
+  case 'PacOnly'
+    [pacMskC,pacMskW,pacMskS] = v4_basin('pacExt');
+    [indMskC,indMskW,indMskS] = v4_basin('indExt');
+    for j=1:length(mygrid.LATS_MASKS)
+      mygrid.LATS_MASKS(j).mskCint = mygrid.LATS_MASKS(j).mskCint .* (pacMskC+indMskC);
+      mygrid.LATS_MASKS(j).mskCedge = mygrid.LATS_MASKS(j).mskCedge .* (pacMskC+indMskC);
+      mygrid.LATS_MASKS(j).mskWedge = mygrid.LATS_MASKS(j).mskWedge .* (pacMskW+indMskW);
+      mygrid.LATS_MASKS(j).mskSedge = mygrid.LATS_MASKS(j).mskSedge .* (pacMskS+indMskS);
+    end
+    
+  case 'AtlPac'
+    %%% Do nothing
+    
+  otherwise
+    error('Unrecognized region type specified in isopDefinitions');
+    
 end
   
 
@@ -133,7 +151,7 @@ eval(['PSI',psitype,'_zonmean = PSI_zonmean;']);
 
 %%% Write to a .mat file
 lat = [mygrid.LATS_MASKS.lat];
-save([products_dir 'PSI',psitype,'.mat'],'dens_levs','dens_bnds','lat',['PSI',psitype],['PSI',psitype,'_mean'],['PSI',psitype,'_zonmean']);
+save([products_dir 'PSI',psitype,'_',regionType,'.mat'],'dens_levs','dens_bnds','lat',['PSI',psitype],['PSI',psitype,'_mean'],['PSI',psitype,'_zonmean']);
 
 %%% Close matlab
 exit;
