@@ -117,11 +117,19 @@ Aisop = zeros(Nlats,Nd,Nt);
 for n = 1:Nt
 % for n = 1
     
-  n
+  disp(n);
   tstart = tic();
   
+  %%% File naming system depends on ECCO version
+  if (isV4R4)
+    thedate = startdate + n - 1;
+    fileidstr = ['_',datestr(thedate,'yyyy_mm_dd')];        
+  else
+    fileidstr = num2str(n,'%.4d');    
+  end
+  
   %%% Load density field
-  DENS = read_nctiles([density_dir 'DENS' num2str(n)],'DENS'); 
+  DENS = read_nctiles([density_dir 'DENS' fileidstr],'DENS'); 
   
   %%% Compute areas in density bins
   [AREAW,AREAS] = layers_remap({AREAW_z,AREAS_z},'extensive',DENS,dens_levs,nDblRes);  
