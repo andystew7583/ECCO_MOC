@@ -47,6 +47,10 @@ switch (regionType)
 
   case 'AtlOnly'
     [atlMskC,atlMskW,atlMskS] = v4_basin('atlExt');
+    [medMskC,medMskW,medMskS] = v4_basin('med');
+    atlMskC = atlMskC - medMskC;
+    atlMskW = atlMskW - medMskW;
+    atlMskS = atlMskS - medMskS;
     for j=1:length(mygrid.LATS_MASKS)
       mygrid.LATS_MASKS(j).mskCint = mygrid.LATS_MASKS(j).mskCint .* atlMskC;
       mygrid.LATS_MASKS(j).mskCedge = mygrid.LATS_MASKS(j).mskCedge .* atlMskC;
